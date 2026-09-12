@@ -1,80 +1,38 @@
 <?php
-// detail.php - CHI TIẾT CÂU LỆNH GIT & KỊCH BẢN THỰC TẾ
+// detail.php - CHI TIẾT CÂU LỆNH GIT & QUY TRÌNH MERGE - PUSH
 
-// 1. Cơ sở dữ liệu chi tiết các câu lệnh Git
 $gitDetails = [
-    1 => [
-        "title" => "Cấu hình danh tính người dùng",
-        "cmd" => "git config --global user.name \"Tên Của Bạn\"\ngit config --global user.email \"email@example.com\"",
-        "level" => "basic",
-        "category" => "Khởi tạo & Cấu hình",
-        "overview" => "Cấu hình thông tin tác giả sẽ gắn liền với tất cả các commit mà bạn tạo ra. Cờ `--global` áp dụng cho toàn bộ dự án trên máy tính của bạn.",
-        "flags" => [
-            ["flag" => "--global", "desc" => "Áp dụng cấu hình cho tất cả các repository của user hiện tại trên máy."],
-            ["flag" => "--local", "desc" => "Chỉ áp dụng cấu hình riêng cho repository hiện tại."],
-            ["flag" => "--list", "desc" => "Xem toàn bộ các thông số cấu hình đang có (`git config --list`)."]
-        ],
-        "workflow" => [
-            "Chạy lệnh khi mới cài đặt Git hoặc dựng máy làm việc mới.",
-            "Các dịch vụ như GitHub/GitLab dùng Email này để khớp commit với tài khoản của bạn.",
-            "Kiểm tra lại danh tính bằng lệnh: `git config user.name` và `git config user.email`."
-        ],
-        "scenario" => "Bạn commit code nhưng GitHub không hiển thị Avatar của bạn trong lịch sử commit. Lỗi do Email cấu hình trong Git local không khớp với Email đăng ký tài khoản GitHub.",
-        "solution" => "Chạy lệnh `git config --global user.email \"email-dung-github@example.com\"` để sửa lại Email chuẩn."
-    ],
-    8 => [
-        "title" => "Tạo và chuyển nhánh (Branching)",
-        "cmd" => "git checkout -b feature/login\n# Hoặc cách mới (Git 2.23+):\ngit switch -c feature/login",
+    9 => [
+        "title" => "Gộp nhánh (Merge) & Đồng bộ GitHub",
+        "cmd" => "# 1. Chuyển về nhánh chính\ngit checkout main\n\n# 2. Cập nhật code mới nhất từ remote\ngit pull origin main\n\n# 3. Gộp nhánh tính năng vào main\ngit merge newbranch\n\n# 4. Đẩy kết quả đã gộp lên GitHub\ngit push origin main",
         "level" => "intermediate",
-        "category" => "Quản lý Nhánh",
-        "overview" => "Tạo một nhánh mới tách biệt khỏi nhánh chính (main/master) để phát triển tính năng hoặc sửa lỗi mà không làm ảnh hưởng đến code đang chạy ổn định.",
+        "category" => "Quản lý Nhánh & Remote",
+        "overview" => "Quy trình chuẩn để đưa toàn bộ code từ nhánh tính năng (newbranch) tích hợp vào nhánh chính (main) và đồng bộ trực tiếp lên repository trên GitHub.",
         "flags" => [
-            ["flag" => "-b", "desc" => "Tạo nhánh mới và chuyển ngay sang nhánh đó (dùng với `git checkout`)."],
-            ["flag" => "-c", "desc" => "Tạo nhánh mới (Create) và chuyển sang (dùng với `git switch`)."],
-            ["flag" => "-a", "desc" => "Liệt kê tất cả các nhánh (cả local và remote) khi dùng `git branch -a`."]
+            ["flag" => "git checkout main", "desc" => "Bắt buộc phải đứng tại nhánh nhận code (main) trước khi thực hiện gộp."],
+            ["flag" => ":wq", "desc" => "Lệnh thoát màn hình Vim khi Git yêu cầu nhập Commit Message (Gõ `:wq` rồi nhấn Enter)."],
+            ["flag" => "-d", "desc" => "Dùng với `git branch -d newbranch` để xóa nhánh ở local sau khi đã gộp xong."],
+            ["flag" => "--delete", "desc" => "Dùng với `git push origin --delete newbranch` để dọn dẹp nhánh trên GitHub."]
         ],
         "workflow" => [
-            "Đảm bảo đang ở nhánh gốc ổn định (thường là `main` hoặc `develop`) và đã `git pull` mới nhất.",
-            "Tạo nhánh mới theo quy chuẩn đặt tên (ví dụ: `feature/login`, `fix/bug-header`).",
-            "Đẩy nhánh mới lên GitHub/GitLab lần đầu bằng: `git push -u origin <ten-nhanh>`."
+            "Chuyển về nhánh `main`: `git checkout main`",
+            "Tải code mới nhất từ GitHub về local: `git pull origin main`",
+            "Thực hiện gộp nhánh: `git merge newbranch`",
+            "Nếu màn hình Vim hiện ra thông báo Merge commit: Gõ `:wq` rồi bấm **Enter** để lưu và thoát.",
+            "Đẩy kết quả gộp lên GitHub: `git push origin main`",
+            "Xóa nhánh thừa nếu hoàn thành task: `git branch -d newbranch` và `git push origin --delete newbranch`"
         ],
-        "scenario" => "Bạn tạo nhánh mới `feature/login`, code xong nhưng trên GitHub không thấy nhánh này đâu.",
-        "solution" => "Do lệnh `git checkout -b` chỉ mới tạo nhánh ở máy local. Bạn cần đẩy lên remote bằng lệnh: `git push -u origin feature/login`."
-    ],
-    17 => [
-        "title" => "Git Reflog (Khôi phục dữ liệu nâng cao)",
-        "cmd" => "git reflog\ngit reset --hard HEAD@{index}",
-        "level" => "advanced",
-        "category" => "Nâng cao & Cứu dữ liệu",
-        "overview" => "Lưu lại nhật ký mọi hành động thay đổi con trỏ HEAD (commit, checkout, reset, rebase). Đây là 'lưới an toàn' cuối cùng giúp bạn cứu lại các commit lỡ tay bị xóa.",
-        "flags" => [
-            ["flag" => "reflog show", "desc" => "Hiển thị nhật ký thao tác chi tiết của HEAD."],
-            ["flag" => "--hard", "desc" => "Đưa toàn bộ Working Directory và Staging Area về đúng trạng thái commit chọn trong reflog."]
-        ],
-        "workflow" => [
-            "Gõ `git reflog` để xem lại lịch sử hành động gần đây kèm mã chỉ số (vd: `HEAD@{1}`).",
-            "Xác định vị trí commit/trạng thái an toàn trước khi xảy ra sự cố.",
-            "Khôi phục lại bằng lệnh `git reset --hard HEAD@{n}` hoặc tạo nhánh mới từ điểm đó `git branch rescue-branch HEAD@{n}`."
-        ],
-        "scenario" => "Bạn lỡ tay gõ `git reset --hard` làm mất sạch các commit vừa làm trong buổi sáng.",
-        "solution" => "Gõ `git reflog` để tìm lại SHA-1 hash hoặc vị trí `HEAD@{n}` của commit trước khi reset, sau đó gõ `git reset --hard HEAD@{n}` để lấy lại toàn bộ code."
+        "scenario" => "Khi gõ `git merge`, Terminal hiện ra màn hình đen thui có chữ xanh 'Merge branch...' và không cho gõ lệnh tiếp.",
+        "solution" => "Đây là trình biên soạn Vim của Git. Bạn chỉ cần gõ `:wq` rồi nhấn Enter để chấp nhận message mặc định và hoàn tất merge."
     ]
 ];
 
-// Lấy ID task từ URL, mặc định lấy id = 8 nếu không truyền hoặc không tìm thấy
-$taskId = isset($_GET['id']) ? (int)$_GET['id'] : 8;
-$data = isset($gitDetails[$taskId]) ? $gitDetails[$taskId] : $gitDetails[8];
+// Lấy ID task từ URL, mặc định là Task #9
+$taskId = isset($_GET['id']) ? (int)$_GET['id'] : 9;
+$data = isset($gitDetails[$taskId]) ? $gitDetails[$taskId] : $gitDetails[9];
 
-// Phân loại Badge
-$badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-$levelName = "Cơ bản";
-if ($data['level'] === 'intermediate') {
-    $badgeClass = "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
-    $levelName = "Trung cấp";
-} elseif ($data['level'] === 'advanced') {
-    $badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
-    $levelName = "Nâng cao";
-}
+$badgeClass = "bg-yellow-500/10 text-yellow-400 border-yellow-500/30";
+$levelName = "Trung cấp";
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -82,7 +40,7 @@ if ($data['level'] === 'intermediate') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIT TERMINAL // COMMAND_DETAILS #<?php echo $taskId; ?></title>
+    <title>GIT TERMINAL // MERGE & PUSH WORKFLOW</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
@@ -148,9 +106,9 @@ if ($data['level'] === 'intermediate') {
         <!-- COMMAND BLOCK -->
         <section class="cyber-card p-6 rounded-xl">
             <div class="flex justify-between items-center mb-3">
-                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">// CÂU LỆNH CHUẨN (TERMINAL COMMAND)</h2>
+                <h2 class="text-xs font-bold text-cyan-400 uppercase tracking-wider">// CÁC CÂU LỆNH THỰC THI (TERMINAL COMMANDS)</h2>
                 <button onclick="copyCmd()" class="text-xs bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/40 px-3 py-1.5 rounded border border-cyan-500/40 transition">
-                    <i class="fa-regular fa-copy mr-1"></i> Sao chép lệnh
+                    <i class="fa-regular fa-copy mr-1"></i> Sao chép tất cả
                 </button>
             </div>
             <div class="bg-black p-4 rounded-lg border border-gray-800 relative group">
@@ -158,10 +116,10 @@ if ($data['level'] === 'intermediate') {
             </div>
         </section>
 
-        <!-- FLAGS & PARAMETERS -->
+        <!-- FLAGS & SPECIAL KEYS -->
         <section class="cyber-card p-6 rounded-xl">
-            <h2 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4">// CÁC THAM SỐ & CỜ MỞ RỘNG (FLAGS)</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <h2 class="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-4">// LỆNH MỞ RỘNG & PHÍM TẮT THOÁT VIM</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <?php foreach ($data['flags'] as $item): ?>
                     <div class="bg-black/50 p-3.5 rounded border border-gray-800/80">
                         <code class="text-xs font-bold text-yellow-300 bg-yellow-950/40 px-2 py-0.5 rounded border border-yellow-800/50 block w-fit mb-2">
@@ -176,7 +134,7 @@ if ($data['level'] === 'intermediate') {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- RECOMMENDED WORKFLOW -->
             <section class="cyber-card p-6 rounded-xl">
-                <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-4">// QUY TRÌNH THỰC HIỆN CHUẨN (WORKFLOW)</h2>
+                <h2 class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-4">// BẢNG GHI NHỚ QUY TRÌNH (STEP-BY-STEP)</h2>
                 <ol class="space-y-3">
                     <?php foreach ($data['workflow'] as $index => $step): ?>
                         <li class="flex items-start text-xs text-gray-300 leading-relaxed">
@@ -191,14 +149,14 @@ if ($data['level'] === 'intermediate') {
 
             <!-- TROUBLESHOOTING & SCENARIO -->
             <section class="cyber-card p-6 rounded-xl border-l-4 border-l-rose-500">
-                <h2 class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-4">// TÌNH HUỐNG LỖI THỰC TẾ & CÁCH XỬ LÝ</h2>
+                <h2 class="text-xs font-bold text-rose-400 uppercase tracking-wider mb-4">// XỬ LÝ MÀN HÌNH VIM KHI MERGE</h2>
                 <div class="space-y-4">
                     <div class="bg-rose-950/20 p-3.5 rounded border border-rose-900/40">
-                        <span class="text-[10px] text-rose-400 font-bold uppercase block mb-1"><i class="fa-solid fa-bug mr-1"></i>Sự cố thường gặp:</span>
+                        <span class="text-[10px] text-rose-400 font-bold uppercase block mb-1"><i class="fa-solid fa-terminal mr-1"></i>Hiện tượng:</span>
                         <p class="text-xs text-gray-300 italic"><?php echo $data['scenario']; ?></p>
                     </div>
                     <div class="bg-emerald-950/20 p-3.5 rounded border border-emerald-900/40">
-                        <span class="text-[10px] text-emerald-400 font-bold uppercase block mb-1"><i class="fa-solid fa-key mr-1"></i>Giải pháp khắc phục:</span>
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase block mb-1"><i class="fa-solid fa-key mr-1"></i>Cách thoát màn hình Vim:</span>
                         <p class="text-xs text-emerald-300 font-mono"><?php echo $data['solution']; ?></p>
                     </div>
                 </div>
