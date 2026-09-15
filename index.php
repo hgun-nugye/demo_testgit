@@ -3,6 +3,28 @@
 $gitTasks = [
     // --- 1. CẤU HÌNH & KHỞI TẠO ---
     [
+        "id" => 0,
+        "level" => "advanced",
+        "category" => "",
+        "title" => "Tổng hợp lệnh git cần dùng",
+        "desc" => "Danh sách các lệnh Git cơ bản.",
+        "cmd" => "git add .\n
+                    git commit -m <...>\n
+                    git push origin main\n
+                    ------------------------\n
+                    git checkout -b <ten_nhanh>\n
+                    git push -u origin <ten_nhanh>\n
+                    ------------------------\n
+                    git checkout main\n
+                    git pull origin main\n
+                    git merge <ten_nhanh>\n
+                    git push origin main\n
+                    ------------------------\n
+                    git checkout main\n
+                    git branch -d <ten_nhanh>\n
+                    git push origin --delete <ten_nhanh>"
+    ],
+    [
         "id" => 1,
         "level" => "basic",
         "category" => "Khởi tạo & Cấu hình",
