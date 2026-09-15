@@ -229,8 +229,14 @@ $gitTasks = [
             <!-- Search Bar -->
             <div class="relative w-full md:w-1/2">
                 <i class="fa-solid fa-terminal absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <!-- Đổi pr-4 thành pr-10 để chừa chỗ cho nút xóa -->
                 <input type="text" id="searchInput" onkeyup="filterTasks()" placeholder="Gõ để tìm câu lệnh hoặc từ khóa (vd: commit, rebase, branch)..."
-                    class="w-full pl-11 pr-4 py-3 bg-gray-900 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-cyan-500 text-cyan-300 placeholder-gray-600 transition">
+                    class="w-full pl-11 pr-10 py-3 bg-gray-900 border border-gray-700 rounded-lg text-sm focus:outline-none focus:border-cyan-500 text-cyan-300 placeholder-gray-600 transition">
+                
+                <!-- Nút xóa (X) -->
+                <button id="clearSearchBtn" onclick="clearSearch()" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-cyan-400 hidden transition" title="Xóa tìm kiếm">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
 
             <!-- Filter Buttons -->
@@ -323,7 +329,17 @@ $gitTasks = [
 
         // Search & Filter combined logic
         function filterTasks() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.toLowerCase();
+            const clearBtn = document.getElementById('clearSearchBtn');
+
+            // Hiển thị/ẩn nút xóa dựa trên nội dung tìm kiếm
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
             const cards = document.querySelectorAll('.task-card');
 
             cards.forEach(card => {
@@ -336,6 +352,14 @@ $gitTasks = [
                     card.style.display = 'none';
                 }
             });
+        }
+
+        // Hàm xóa nội dung tìm kiếm
+        function clearSearch() {
+            const searchInput = document.getElementById('searchInput');
+            searchInput.value = '';
+            filterTasks(); // Gọi lại hàm lọc để hiển thị toàn bộ
+            searchInput.focus(); // Đưa con trỏ quay lại ô tìm kiếm
         }
 
         // Copy to clipboard
